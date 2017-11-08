@@ -19,7 +19,7 @@ createJson(){
 }
 EOF
 }
-sleep 10
+sleep 30
 # Schritt 1: Master finden
 TARGETS=`nmap -PN -p 80 --open -oG - 192.168.0.* | awk '$NF~/http/{print $2}'`
 MASTER_IP=""
