@@ -27,7 +27,7 @@ MASTER_IP=""
 while read line
 do
    content=$(wget http://$line -q -O -)
-   if [ $content == "master" ]; then
+   if [ "$content" == "master" ]; then
      MASTER_IP=`echo $line`
      break
    fi
