@@ -3,25 +3,25 @@
 createJson(){
   cat <<EOF
 {
-  "ClientInfo": {
-    "Hostname": "$HOSTNAME",
-    "Ip": "$IP"
+  'ClientInfo': {
+    'Hostname': '$HOSTNAME',
+    'Ip': '$IP'
   },
-  "CpuUsage": {
-    "Usage": $CPU_USAGE
+  'CpuUsage': {
+    'Usage': $CPU_USAGE
   },
-  "RamUsage": {
-    "Usage": $RAM_USAGE
+  'RamUsage': {
+    'Usage': $RAM_USAGE
   },
-  "DockerInfo": {
-    "RunningContainers": []
+  'DockerInfo': {
+    'RunningContainers': []
   }
 }
 EOF
 }
 
 # Schritt 1: Master finden
-TARGETS=`nmap -PN -p 80 --open -oG - 172.17.0.* | awk '$NF~/http/{print $2}'`
+TARGETS=`nmap -PN -p 80 --open -oG - 192.168.0.* | awk '$NF~/http/{print $2}'`
 MASTER_IP=""
 
 while read line
@@ -44,16 +44,12 @@ echo "MASTER FOUND AT $MASTER_IP"
 while true
 do
   CPU_USAGE=`grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage}'`
-  RAM_USAGE=`free -m | awk 'NR==2{printf "%.2f%%", $3*100/$2 }'`
+  RAM_USAGE=`free -m | awk 'NR==2{printf "%.2f", $3*100/$2 }'`
   IP=`/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1`
   RUNNING_CONTAINER=`docker ps --format="{{ json .Names }}" | sed 's/"//g'`
 
   echo $(createJson)
-
-  #curl -i \
-  #-H "Accept: application/json" \
-  #-H "Content-Type:application/json" \
-  #-X POST --data "$(createJson)" "https://xxx:xxxxx@xxxx-www.xxxxx.com/xxxxx/xxxx/xxxx"
-
+ echo "http://$MASTER_IP/api/status"
+  curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "$(createJson)" "http://$MASTER_IP/api/status"
   sleep 1
 done
