@@ -1,2 +1,2 @@
 #!/bin/bash
-/home/pi/raspberrycloud/observer/publish/PrivateCloudWatcher &
+sudo /home/pi/raspberrycloud/observer/publish/PrivateCloudWatcher &
