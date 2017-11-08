@@ -3,11 +3,19 @@
 createJson(){
   cat <<EOF
 {
-  'hostname' : '$HOSTNAME',
-  'ip' : '$IP',
-  'cpuUsage': '$CPU_USAGE',
-  'ramUsage' : '$RAM_USAGE',
-  'runningContainers' : '$RUNNING_CONTAINER'
+  "ClientInfo": {
+    "Hostname": "$HOSTNAME",
+    "Ip": "$IP"
+  },
+  "CpuUsage": {
+    "Usage": $CPU_USAGE
+  },
+  "RamUsage": {
+    "Usage": $RAM_USAGE
+  },
+  "DockerInfo": {
+    "RunningContainers": []
+  }
 }
 EOF
 }
@@ -36,7 +44,7 @@ echo "MASTER FOUND AT $MASTER_IP"
 while true
 do
   CPU_USAGE=`grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print usage}'`
-  RAM_USAGE=`df -h | awk '$NF=="/"{printf "%d/%dGB (%s)", $3,$2,$5}'`
+  RAM_USAGE=`free -m | awk 'NR==2{printf "%.2f%%", $3*100/$2 }'`
   IP=`/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1`
   RUNNING_CONTAINER=`docker ps --format="{{ json .Names }}" | sed 's/"//g'`
 
