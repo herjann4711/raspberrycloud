@@ -1,6 +1,7 @@
 #!/bin/bash
-rm -r /home/pi/raspberrycloud
-cd /home/pi/
-git clone https://github.com/herjann4711/raspberrycloud.git
+cd /home/pi/raspberrycloud/
+git reset --hard
+git clean -fd
+git pull
 chmod +x /home/pi/raspberrycloud/observer/start_server.sh
 /home/pi/raspberrycloud/observer/start_server.sh
