@@ -48,8 +48,6 @@ do
   IP=`/sbin/ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1`
   RUNNING_CONTAINER=`docker ps --format="{{ json .Names }}" | sed 's/"//g'`
 
-  echo $(createJson)
- echo "http://$MASTER_IP/api/status"
   curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "$(createJson)" "http://$MASTER_IP/api/status"
   sleep 1
 done
