@@ -1,6 +1,4 @@
 #!/bin/bash
-# Methoden definieren
-
 cd /home/pi/raspberrycloud/
 git reset --hard
 git clean -fd
